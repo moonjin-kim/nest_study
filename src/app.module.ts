@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,9 +22,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       logging: process.env.DB_LOGGING === 'true', 
       dropSchema: process.env.DB_DROP_SCHEMA === 'true',
       entities: [
-        "src/entity/**/*.ts",
+        "src/**/entities/*.entity.js}",
       ],
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
