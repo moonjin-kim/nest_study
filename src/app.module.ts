@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { UserEntity } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -21,10 +22,8 @@ import { UserModule } from './user/user.module';
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true', 
       dropSchema: process.env.DB_DROP_SCHEMA === 'true',
-      entities: [
-        "src/**/entities/*.entity.js}",
-      ],
-    }),
+      entities: [UserEntity],
+      }),
     UserModule,
   ],
   controllers: [AppController],

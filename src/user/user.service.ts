@@ -21,7 +21,7 @@ export class UserService {
           email:body.email,
           password: body.password,
           age: body.age,
-          name: body.name,
+          nickname: body.nickname,
         })
     }     
 }
