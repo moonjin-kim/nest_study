@@ -1,5 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
-@EntityRepository(UserEntity)
-export class UserRepository extends Repository<UserEntity> {}
+@Injectable()
+export class UserRepository extends Repository<UserEntity>{
+    
+    async findByEmail(email: string) {
+        return this.findOne({ where : { email } })
+    }
+}
