@@ -14,7 +14,7 @@ export class RegisterUserDto {
         dto.email = email;
         dto.password = password;
         dto.nickname = nickname;
-        
+
         return dto;
     }
 

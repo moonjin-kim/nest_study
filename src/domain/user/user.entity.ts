@@ -3,26 +3,43 @@ import {
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
+import { Schedule } from '../ schedule/schedule.entity';
 
 @Entity({ name: 'user' })
-export class UserEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    nullable: false,
+    unique: true,
+  })
   email: string;
 
-  @Column({type: "text"})
+  @Column({
+    type: "text",
+    nullable: false,
+  })
   password: string;
 
-  @Column({type: "text"})
+  @Column({
+    type: "text",
+    nullable: false,
+  })
   salt: string;
 
-  @Column()
+  @Column({
+    type: "text",
+    nullable: false,
+  })
   nickname: string;
+
+  @OneToMany(() => Schedule, schedule => schedule.user, {lazy: true, cascade: true})
+  schedules: Schedule[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -35,13 +52,13 @@ export class UserEntity {
 
   constructor(){}
 
-  static create(
+  static signup(
     email: string,
     password: string,
     salt: string,
     nickname: string,
   ) {
-    const user = new UserEntity;
+    const user = new User;
     user.email = email;
     user.password = password;
     user.salt = salt;

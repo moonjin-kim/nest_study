@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
+import { UserService } from '../../service/user/user.service';
 import { RegisterUserDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

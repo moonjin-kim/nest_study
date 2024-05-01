@@ -1,15 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegisterUserDto } from './dto/signup.dto';
+import { RegisterUserDto } from '../../controller/user/dto/signup.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
 import * as util from 'util';
 import * as crypto from 'crypto';
-import { SignInDto } from './dto/signin.dto';
-import { UserRepository } from './repository/user.repository';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { SignInDto } from '../../controller/user/dto/signin.dto';
+import { UpdateUserDto } from '../../controller/user/dto/update-user.dto';
 import { UserItemDto } from './dto/user-item.dto';
+import { User } from 'src/domain/user/user.entity';
 
 const randomBytesPromise = util.promisify(crypto.randomBytes);
 const pbkdf2Promise = util.promisify(crypto.pbkdf2);
@@ -18,8 +17,8 @@ const ENCRYPTED_COUNT = 221523;
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async Register(body: RegisterUserDto): Promise<String>{
@@ -31,7 +30,7 @@ export class UserService {
     const { hashedPassword, salt } = await this.createHashedPassword(body.password);
 
     await this.userRepository.save(
-      UserEntity.create(
+      User.signup(
         body.email,
         hashedPassword,
         salt,
