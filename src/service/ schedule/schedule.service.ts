@@ -6,10 +6,11 @@ import { User } from 'src/domain/user/user.entity';
 import { ScheduleCreateParam } from 'src/controller/schedule/dto/ScheduleCreateParam';
 
 @Injectable()
-export class UserService {
+export class ScheduleService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
   ) {}
 
@@ -17,13 +18,27 @@ export class UserService {
     userId: number,
     dto: ScheduleCreateParam,
   ) {
-    const user = await this.userRepository.findOneBy({id: userId});
-    if(!user) {
-        throw new NotFoundException('회원을 찾을 수 없습니다');
-    }
+      const user = await this.userRepository.findOneBy({id: userId});
+      if(!user) {
+          throw new NotFoundException('회원을 찾을 수 없습니다');
+      }
 
-    const schedule = await this.scheduleRepository.save(dto.toEntity(user));
+      const schedule = await this.scheduleRepository.save(dto.toEntity(user));
 
-    return Number(schedule.id);
+      return Number(schedule.id);
+  }
+
+  async update(
+    userId: number,
+    dto: ScheduleCreateParam,
+  ) {
+      const user = await this.userRepository.findOneBy({id: userId});
+      if(!user) {
+          throw new NotFoundException('회원을 찾을 수 없습니다');
+      }
+
+      const schedule = await this.scheduleRepository.save(dto.toEntity(user));
+
+      return Number(schedule.id);
   }
 }

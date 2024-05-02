@@ -25,7 +25,7 @@ export class Schedule {
     content: string;
 
     @Column({
-        type: "timestamptz",
+        type: "date",
         nullable: false,
     })
     date: Date;

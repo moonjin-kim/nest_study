@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './service/user.module';
 import { User } from './domain/user/user.entity';
+import { Schedule } from './domain/ schedule/schedule.entity';
+import { ScheduleModule } from './service/schedule.module';
 
 @Module({
   imports: [
@@ -22,9 +24,10 @@ import { User } from './domain/user/user.entity';
       synchronize: process.env.DB_SYNCHRONIZE === 'true',
       logging: process.env.DB_LOGGING === 'true', 
       dropSchema: process.env.DB_DROP_SCHEMA === 'true',
-      entities: [User],
+      entities: [User, Schedule],
       }),
     UserModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

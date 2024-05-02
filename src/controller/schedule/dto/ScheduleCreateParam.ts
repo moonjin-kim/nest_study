@@ -26,7 +26,7 @@ export class ScheduleCreateParam {
         return dto;
     }
 
-    toEntity(user: User) {
+    public toEntity(user: User) {
         return Schedule.create(
             this.header,
             this.content,
