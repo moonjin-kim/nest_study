@@ -6,9 +6,11 @@ import { Schedule } from 'src/domain/schedule/schedule.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/domain/user/user.entity';
 import { Repository } from 'typeorm';
+import { ScheduleItemDto } from 'src/service/schedule/dto/ScheduleItem.dto';
 
 const mockScheduleRepository = () => ({
   save: jest.fn(),
+  find: jest.fn(),
 });
 
 const mockUserRepository = () => ({
@@ -55,6 +57,7 @@ describe('ScheduleService Test (Unit)', () => {
       nickname: 'test',
     };
     const creatSchedule = {
+      id: 1,
       header: 'test',
       content: 'test',
       date: new Date(2024,5,4),
@@ -77,10 +80,54 @@ describe('ScheduleService Test (Unit)', () => {
       const result = await service.create(1,dto); //
       
       expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
-      // expect(userRepository.findOneBy).toHaveBeenCalledWith(creatUser); 
       expect(scheduleRepository.save).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
-      expect(scheduleRepository.save).toHaveBeenCalledWith(creatSchedule); 
+      expect(result).toBe(1);
+    });
+  });
 
+  describe('get', () => {
+    const creatUser = {
+      id: 1,
+      email: 'test@test.com',
+      password: 'test',
+      salt: 'test',
+      nickname: 'test',
+    };
+    const creatSchedule = {
+      id: 1,
+      header: 'test',
+      content: 'test',
+      date: new Date(2024,5,4),
+      startTime: '10:00',
+      endTime: "11:00",
+      user: creatUser,
+    };
+    it('스케줄 조회', async () => {
+      userRepository.findOneBy.mockResolvedValue(creatUser);
+      scheduleRepository.find.mockResolvedValue([creatSchedule]);
+
+      const result = await service.get(1,2024,5); //
+      
+      expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(scheduleRepository.find).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('header', 'test');
+      expect(result[0]).toHaveProperty('content', 'test');
+      expect(result[0]).toHaveProperty('date', new Date(2024,5,4));
+      expect(result[0]).toHaveProperty('startTime', '10:00');
+      expect(result[0]).toHaveProperty('endTime', '11:00');
+    });
+    
+    it('스케줄 조회 시 조건을 만족하는 결과가 없으면 빈 값이 조회된다', async () => {
+      userRepository.findOneBy.mockResolvedValue(creatUser);
+      scheduleRepository.find.mockResolvedValue([]);
+
+      const result = await service.get(1,2024,5); //
+      
+      expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(scheduleRepository.find).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+
+      expect(result).toHaveLength(0);
     });
   });
 });
