@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { UserEntity } from "src/user/entities/user.entity";
+import { User } from "src/domain/user/user.entity";
 
 export const typeORMConfig: TypeOrmModuleOptions = {
     type: "mysql",
@@ -11,5 +11,5 @@ export const typeORMConfig: TypeOrmModuleOptions = {
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
     logging: process.env.DB_LOGGING === 'true', 
     dropSchema: process.env.DB_DROP_SCHEMA === 'true',
-    entities: [UserEntity],
+    entities: [User],
 };
