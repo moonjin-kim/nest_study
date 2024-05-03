@@ -1,18 +1,14 @@
 export class UserItemDto {
-    email: string;
-    nickname: string;
+  email: string;
+  nickname: string;
 
-    constructor(){}
+  constructor() {}
 
-    static create(
-        email: string,
-        nickname: string,
-    ) {
-        const dto = new UserItemDto();
-        dto.email = email;
-        dto.nickname = nickname;
+  static create(email: string, nickname: string) {
+    const dto = new UserItemDto();
+    dto.email = email;
+    dto.nickname = nickname;
 
-        return dto;
-    }
-
+    return dto;
+  }
 }
