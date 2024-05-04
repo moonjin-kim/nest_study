@@ -36,13 +36,11 @@ export class ScheduleService {
     const schedule = await this.scheduleRepository.findOneBy({
       id: scheduleId,
     });
-    schedule.update(
-      dto.header,
-      dto.content,
-      dto.date,
-      dto.startTime,
-      dto.endTime,
-    );
+    schedule.header = dto.header;
+    schedule.content = dto.content;
+    schedule.date = dto.date;
+    schedule.startTime = dto.startTime;
+    schedule.endTime = dto.endTime;
     await this.scheduleRepository.save(schedule);
 
     return Number(schedule.id);

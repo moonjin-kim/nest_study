@@ -7,10 +7,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/domain/user/user.entity';
 import { Repository } from 'typeorm';
 import { ScheduleItemDto } from 'src/service/schedule/dto/ScheduleItem.dto';
+import { ScheduleUpdateParam } from 'src/controller/schedule/dto/ScheduleUpdateParam';
 
 const mockScheduleRepository = () => ({
   save: jest.fn(),
   find: jest.fn(),
+  findOneBy: jest.fn(),
 });
 
 const mockUserRepository = () => ({
@@ -85,6 +87,52 @@ describe('ScheduleService Test (Unit)', () => {
     });
   });
 
+  describe('update', () => {
+    const creatUser = {
+      id: 1,
+      email: 'test@test.com',
+      password: 'test',
+      salt: 'test',
+      nickname: 'test',
+    };
+    const creatSchedule = {
+      id: 1,
+      header: 'test',
+      content: 'test',
+      date: new Date(2024,5,4),
+      startTime: '10:00',
+      endTime: "11:00",
+      user: creatUser,
+    };
+    const updateSchedule = {
+      id: 1,
+      header: 'testUpdate',
+      content: 'testUpdate',
+      date: new Date(2024,5,4),
+      startTime: '10:00',
+      endTime: "11:00",
+      user: creatUser,
+    };
+    it('스케줄 변경', async () => {
+      userRepository.findOneBy.mockResolvedValue(creatUser);
+      scheduleRepository.findOneBy.mockResolvedValue(creatSchedule);
+      scheduleRepository.save.mockResolvedValue(updateSchedule);
+
+      const result = await service.update(1,1,ScheduleUpdateParam.update(
+        'testUpdate',
+        'testUpdate',
+        new Date(2024,5,4),
+        "10:00",
+        "11:00"
+      )); //
+      
+      expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(scheduleRepository.save).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(scheduleRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
+      expect(result).toBe(1);
+    });
+  });
+
   describe('get', () => {
     const creatUser = {
       id: 1,
@@ -102,6 +150,7 @@ describe('ScheduleService Test (Unit)', () => {
       endTime: "11:00",
       user: creatUser,
     };
+
     it('스케줄 조회', async () => {
       userRepository.findOneBy.mockResolvedValue(creatUser);
       scheduleRepository.find.mockResolvedValue([creatSchedule]);
@@ -117,7 +166,7 @@ describe('ScheduleService Test (Unit)', () => {
       expect(result[0]).toHaveProperty('startTime', '10:00');
       expect(result[0]).toHaveProperty('endTime', '11:00');
     });
-    
+
     it('스케줄 조회 시 조건을 만족하는 결과가 없으면 빈 값이 조회된다', async () => {
       userRepository.findOneBy.mockResolvedValue(creatUser);
       scheduleRepository.find.mockResolvedValue([]);
