@@ -79,11 +79,26 @@ describe('ScheduleService Test (Unit)', () => {
       userRepository.findOneBy.mockResolvedValue(creatUser);
       scheduleRepository.save.mockResolvedValue(creatSchedule);
 
-      const result = await service.create(1,dto); //
+      const result = await service.create(1, new Date(), dto); //
       
       expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
       expect(scheduleRepository.save).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
       expect(result).toBe(1);
+    });
+
+    it('현재시간이 스케줄 일정보다 뒤 일 경우 예외가 발생한다.', async () => {
+      const dto = ScheduleCreateParam.create(
+        'test',
+        'test',
+        new Date(2024,5,4),
+        '10:00',
+        '11:00'
+      )
+
+      expect(async () => { 
+        await service.create(1, new Date(2024,5,5), dto)
+      }).rejects.toThrowError(new Error('일정을 생성할 수 없는 시간입니다.'));
+      
     });
   });
 
@@ -118,7 +133,7 @@ describe('ScheduleService Test (Unit)', () => {
       scheduleRepository.findOneBy.mockResolvedValue(creatSchedule);
       scheduleRepository.save.mockResolvedValue(updateSchedule);
 
-      const result = await service.update(1,1,ScheduleUpdateParam.update(
+      const result = await service.update(1, 1, new Date(),ScheduleUpdateParam.update(
         'testUpdate',
         'testUpdate',
         new Date(2024,5,4),
@@ -126,10 +141,22 @@ describe('ScheduleService Test (Unit)', () => {
         "11:00"
       )); //
       
-      expect(userRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
-      expect(scheduleRepository.save).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
-      expect(scheduleRepository.findOneBy).toHaveBeenCalledTimes(1); // save가 1번 불러졌니?
       expect(result).toBe(1);
+    });
+
+    it('스케줄 시간이 지나면 수정할 수 없다.', async () => {
+      const updateParam = ScheduleUpdateParam.update(
+        'testUpdate',
+        'testUpdate',
+        new Date(2024,5,4),
+        "10:00",
+        "11:00"
+      )
+
+      expect(async () => { 
+        await service.update(1, 1, new Date(2024,5,5), updateParam); //
+      }).rejects.toThrowError(new Error('일정을 수정 할 수 없는 시간입니다.'));
+      
     });
   });
 

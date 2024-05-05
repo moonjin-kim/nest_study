@@ -23,7 +23,7 @@ export class ScheduleController {
     @Param('id') id: string,
     @Body() scheduleCreateDto: ScheduleCreateParam,
   ) {
-    return this.scheduleSrvice.create(+id, scheduleCreateDto);
+    return this.scheduleSrvice.create(+id, new Date(), scheduleCreateDto);
   }
 
   @Put(':id')
@@ -31,7 +31,7 @@ export class ScheduleController {
     @Param('id') id: string,
     @Body() scheduleUpdateDot: ScheduleUpdateParam,
   ) {
-    return this.scheduleSrvice.update(+id, 1, scheduleUpdateDot);
+    return this.scheduleSrvice.update(+id, 1, new Date(), scheduleUpdateDot);
   }
 
   @Get(':id')
