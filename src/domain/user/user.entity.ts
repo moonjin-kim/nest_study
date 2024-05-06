@@ -1,13 +1,13 @@
 import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Schedule } from '../ schedule/schedule.entity';
+import { Schedule } from '../schedule/schedule.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -21,24 +21,27 @@ export class User {
   email: string;
 
   @Column({
-    type: "text",
+    type: 'text',
     nullable: false,
   })
   password: string;
 
   @Column({
-    type: "text",
+    type: 'text',
     nullable: false,
   })
   salt: string;
 
   @Column({
-    type: "text",
+    type: 'text',
     nullable: false,
   })
   nickname: string;
 
-  @OneToMany(() => Schedule, schedule => schedule.user, {lazy: true, cascade: true})
+  @OneToMany(() => Schedule, (schedule) => schedule.user, {
+    lazy: true,
+    cascade: true,
+  })
   schedules: Schedule[];
 
   @CreateDateColumn()
@@ -50,7 +53,7 @@ export class User {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  constructor(){}
+  constructor() {}
 
   static signup(
     email: string,
@@ -58,7 +61,7 @@ export class User {
     salt: string,
     nickname: string,
   ) {
-    const user = new User;
+    const user = new User();
     user.email = email;
     user.password = password;
     user.salt = salt;
@@ -66,10 +69,7 @@ export class User {
     return user;
   }
 
-  public changeInfo(
-    nickname: string,
-  ) {
+  public changeInfo(nickname: string) {
     this.nickname = nickname;
   }
-
 }
